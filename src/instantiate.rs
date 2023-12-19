@@ -9,11 +9,6 @@ pub fn set_up_contract(
     info: MessageInfo,
     msg: InstantiateMsg
 ) -> Result<Response, ContractError> {
-    // Ensure that the provided funding is not zero (see README for explanation on this)
-    if msg.initial_funding_token1.amount.is_zero() || msg.initial_funding_token2.amount.is_zero() {
-        return Err(ContractError::InvalidZeroAmount {});
-    }
-
     // Validate LP token address and save to config
     let lp_token_address = deps.api.addr_validate(&msg.contract_config.lp_token_addr)?;
     let config = Config {

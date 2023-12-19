@@ -1,34 +1,40 @@
 # Automated Market Maker (AMM) Smart Contract
 
 ## Overview
-This Automated Market Maker (AMM) Smart Contract provides decentralized exchange functionality allowing users to swap between two different token types and provide liquidity to token pairs. It is designed to run on a CosmWasm-compatible blockchain. The AMM uses a constant product formula (x * y = k) to maintain market liquidity and determine prices.
+This Automated Market Maker (AMM) Smart Contract provides decentralized exchange functionality allowing users to swap between two different assets, provide liquidity to the liquidity pool, withdraw liquidity, and query the pool reserve and individual shares. It is designed to run on a CosmWasm-compatible blockchain. The AMM uses a constant product formula (x * y = k) to maintain market liquidity and determine prices.
 
-# Features
-Token Swapping: Users can swap between two types of tokens at rates determined by the current liquidity pool's state.
-Liquidity Provision: Users can add liquidity to the pool and receive liquidity provider (LP) tokens in return. These LP tokens represent their share of the pool.
-Liquidity Removal: LP token holders can remove their share of liquidity from the pool and receive a portion of the underlying assets in return.
-Fee Collection: A fee is applied to swaps which is then distributed to liquidity providers, proportional to their share of the pool.
-Slippage Protection: Trades are protected by slippage tolerance levels to prevent significant unexpected price movements.
-
-# Functionality
-## Swapping Tokens
-To swap tokens, users submit a swap transaction specifying the amount and type of token they wish to swap and the token type they wish to receive. The contract calculates the swap price based on the current pool reserves while ensuring the constant product formula remains intact and that the slippage does not exceed the tolerated amount. 
-## Providing Liquidity
-To provide liquidity, users deposit a pair of tokens into the pool. The contract mints LP tokens to the user based on the current share price of the pool's liquidity. The deposited tokens are then added to the pool's reserves.
-## Withdrawing Liquidity
-Liquidity providers can burn their LP tokens to remove their share of liquidity from the pool. The contract returns an amount of each underlying token proportional to the LP tokens burned.
-
-# Contract Explanation 
 ## Instantiate 
-When instantiating the contract, the initial Pool Reserves, Fee Percentage, and Total Shares are set.
-- Pool Reserves: Set the initial reserves for both tokens in the liquidity pool to zero. This means that the pool is empty at the start, and liquidity providers will need to deposit tokens to create liquidity.
-- Fee Percentage: If your contract takes a fee for swaps, you'll need to set the initial fee percentage. This should be a value that's reasonable to compensate liquidity providers for the risk of impermanent loss without being so high as to discourage traders from using the AMM.
-- Total Shares: Set the total number of liquidity shares to zero since there are no liquidity providers at the start.
+When instantiating the contract, the following parameters are needed:
+- LP Token Address: contract address for the LP tokens 
+- Fee share percentage: The swap fees for the pool 
+- Deposit ratio tolerance percentage: The tolerance when calculating the correct deposit ratio for the XYK pool 
+You also have the option to contribute to the pool during instantiation: 
+- Initial Funding token1
+- Initial Funding token 2
 
-NOTE: Currently the contract is set to only allow instantiation if initial liquidity is provided to the pool. 
-If you want to update the contract to allow for a pool to be deployed with no initial liquidity, two topics need to be considered:
+NOTE: This contract was created under the assumption that the liquidity pool was already created and funded and the LP token was already minted beforehand.
+If this isn't done beforehand, a few changes will need to be made to the contract. 
+
+If the pool is not properly funded before deploying this contract, a few things need to be considered and addressed: 
 - No Initial Trading: If the pool starts with no liquidity, no trading can occur until liquidity is provided. That means users cannot swap tokens until at least one liquidity provider adds funds to the pool.
 - Incentive to Provide Liquidity: There must be an incentive mechanism in place to encourage users to provide liquidity. Without initial liquidity, the first providers take on the most risk, and typically, protocols offer them higher rewards.
 - Price Impact: The first liquidity provider sets the initial price of the tokens in the pool. This can have a significant impact on the market, especially if the provided liquidity is not balanced.
 - Slippage: With very low liquidity, trades will have high slippage, making it costly for traders until the pool grows larger.
-The contract would need to be updated to handle this situation, and it would be recommended to implement a liquidity bootstrapping mechanism. 
+The contract would need to be updated to handle this situation, and it would be recommended to implement a liquidity bootstrapping mechanism.
+
+## Execution
+- Deposit: Provide liquidity to the AMM pool by depositing a pair of assets.
+- Withdraw: Remove liquidity from the AMM pool by burning your liquidity tokens.
+- Swap: Swap one asset for another within the AMM pool.
+
+## Queries 
+- GetReserves: The current reserves of the AMM pool.
+- GetUserShare: The share of a specific user in the AMM pool.
+- GetConfig: The contract's configuration.
+
+## Testing 
+Tests are written with cw-multi-test 
+```shell
+cargo build 
+cargo test 
+```

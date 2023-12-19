@@ -1,4 +1,4 @@
-use cosmwasm_std::{Addr, BankMsg, Coin, CosmosMsg, Decimal, DepsMut, Env, MessageInfo, Response, to_binary, to_json_binary, Uint128, wasm_execute, WasmMsg};
+use cosmwasm_std::{Addr, BankMsg, Coin, CosmosMsg, Decimal, DepsMut, Env, MessageInfo, Response, to_binary, to_json_binary, Uint128, WasmMsg};
 use cw20::Cw20ExecuteMsg;
 use crate::error::ContractError;
 use crate::msg::Config;
