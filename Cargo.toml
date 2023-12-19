@@ -1,0 +1,25 @@
+[package]
+name = "amm-contract"
+version = "0.1.0"
+authors = ["Brianna Migliaccio <migliacciobri@gmail.com>"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# for quicker tests, cargo test --lib
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+library    = []
+
+[dependencies]
+cw2                 = "1.1.2"
+cw20                = "1.1.2"
+cosmwasm-std        = "1.5.0"
+cw-storage-plus     = "1.2.0"
+thiserror           = "1.0.49"
+cosmwasm-schema     = "1.1"
+cw-utils            = "1.0.1"
+serde               = "1.0.193"
+cw-multi-test       = "0.20.0"
